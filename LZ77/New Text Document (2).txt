@@ -1,0 +1,98 @@
+choose = 1
+class TAG(object):
+    def __init__(self, counter, length, nextChar):
+        self.counter = counter
+        self.length = length
+        self.nextChar = nextChar
+def encomp(myNew,SIZE):
+    counter = 0
+    length = 0
+    result = []
+    lockahead = myNew
+    search = ""
+    list = []
+    searchNow = ""
+    dif = 0
+    for x in range(len(lockahead)):
+        searchNow = searchNow + lockahead[0]
+        if len(search) > SIZE and SIZE!=0:
+            dif = dif + len(search) - SIZE
+            search = search[len(search) - SIZE:]
+            length = 0
+        if searchNow not in search:
+            if counter > 7 and length == 1:
+                counter = 0
+                length = 0
+            result.append("<{},{},{}>".format(counter, length, lockahead[0]))
+            search = search + searchNow
+            lockahead = lockahead[1:]
+            searchNow = ""
+            list.clear()
+            length = 0
+        else:
+            if (x == len(myNew) - 1):
+                if counter > 7 and length == 1:
+                    counter = 0
+                    length = 0
+                result.append("<{},{},{}>".format(counter, length, lockahead[0]))
+                break
+            else:
+                lockahead = lockahead[1:]
+            list.append(x)
+            if(SIZE!=0):
+                counter=list[0] - myNew.index(searchNow, dif, size + dif)
+            else:
+                counter = list[0] - myNew.index(searchNow)
+            length = length + 1
+            continue
+    return result
+def decomp(tagss):
+    myResultString=""
+    for i in range(len(tagss)):
+        if tagss[i].counter==0:
+            myResultString=myResultString+tagss[i].nextChar
+        else:
+            myResultString=myResultString+myResultString[len(myResultString)-tagss[i].counter:len(myResultString)-tagss[i].counter+tagss[i].length]+tagss[i].nextChar
+    return myResultString
+
+while choose != 0:
+    print("\n\n------------------------")
+    print("Welcome to LW77 Program")
+    print("------------------------")
+    print("1. encompression")
+    print("2. decompression")
+    program=int(input())
+    if(program==1):
+        print("Enter your text sequence to encompression it or enter 0 to exit")
+        choose = input()
+        if choose != "0":
+            print("Fixed Search window size and lookahead window size?")
+            print("1. Yes")
+            print("2. No")
+            opinion = int(input())
+            if (opinion == 1):
+                print("Enter window size:")
+                size = int(input())
+            else:
+                size=0
+            result=encomp(choose,size)
+            print(result)
+        else:
+            exit(0)
+    elif program==2:
+        tags=[]
+        print("enter nums of tags")
+        num=int(input())
+        for i in range(num):
+            print("enter counter of tag {}".format(i+1))
+            c=int(input())
+            print("enter length of tag {}".format(i+1))
+            l=int(input())
+            print("enter next Char of tag {}".format(i+1))
+            n=str(input())
+            myObj=TAG(c,l,n)
+            tags.append(myObj)
+        result=decomp(tags)
+        print(result)
+    else:
+        exit(0)
